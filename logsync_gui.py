@@ -392,53 +392,225 @@ def append_csv(path, qsos):
 
 # ================================================================ GUI
 
+# --- Traductions FR / EN ---
+TR = {
+    "fr": {
+        "title": "logsync  -  Fusion WSJT-X / MSHV   (ON7VZ)",
+        "lang": "Langue / Language :",
+        "config": "Configuration",
+        "mshv_dir": "Dossier MSHV (mshvlog.edim / .adi) :",
+        "wsjtx_dir": "Dossier WSJT-X (wsjtx.log / _log.adi) :",
+        "browse": "Parcourir...",
+        "call": "Indicatif :",
+        "grid": "Locator :",
+        "save_cfg": "Enregistrer config",
+        "analyse": "Analyser  (ne modifie rien)",
+        "merge": "FUSIONNER",
+        "edim_direct": "Ecrire directement dans MSHV (.edim)",
+        "intro1": "Choisis tes deux dossiers, puis clique sur \"Analyser\".",
+        "intro2": "Avant \"Fusionner\" : FERME MSHV et WSJT-X.",
+        "lang_set": "Langue : Francais",
+        "cfg_saved": "Config enregistree dans {0}",
+        "browse_mshv": "Dossier des logs MSHV",
+        "browse_wsjtx": "Dossier des logs WSJT-X",
+        "need_dirs_t": "Dossiers manquants",
+        "need_dirs_m": "Choisis d'abord les deux dossiers (boutons Parcourir).",
+        "an_problem": "PROBLEME : certains fichiers sont introuvables.",
+        "an_files": "Verifie les deux dossiers.",
+        "an_header": "=== ANALYSE (rien n'a ete modifie) ===",
+        "an_wsjtx": "WSJT-X  wsjtx.log    : {0} QSO",
+        "an_adi": "MSHV    mshvlog.adi  : {0} QSO",
+        "an_edim": "MSHV    mshvlog.edim : {0} QSO (log actif)",
+        "an_master": "MASTER (union) : {0} QSO  [{1}]",
+        "an_iffusion": "Si tu fusionnes :",
+        "an_to_edim": "  -> MSHV  mshvlog.edim  recevra : {0} QSO",
+        "an_to_wadi": "  -> WSJT-X wsjtx_log.adi passera a : {0} QSO",
+        "an_to_csv": "  -> WSJT-X wsjtx.log    recevra : {0} QSO",
+        "cf_title": "Confirmer la fusion",
+        "cf_head": "MSHV et WSJT-X doivent etre FERMES.\n\nLe programme va :\n  - sauvegarder mshvlog.edim et wsjtx_log.adi (copie horodatee)\n  - reecrire wsjtx_log.adi avec le master complet\n  - {0}\n\nContinuer ?",
+        "cf_edim": "ajouter les QSO manquants dans mshvlog.edim",
+        "cf_delta": "produire delta_pour_mshv.adi (import manuel dans MSHV)",
+        "fu_abort": "Abandon : fichiers introuvables. Lance d'abord Analyser.",
+        "fu_header": "=== FUSION ===",
+        "fu_bak_wadi": "Sauvegarde wsjtx_log.adi : {0}",
+        "fu_wadi": "wsjtx_log.adi reecrit : {0} QSO",
+        "fu_bak_csv": "Sauvegarde wsjtx.log : {0}",
+        "fu_csv": "wsjtx.log : {0} QSO ajoutes",
+        "fu_bak_edim": "Sauvegarde mshvlog.edim : {0}",
+        "fu_edim": "mshvlog.edim : {0} QSO ajoutes (total ~{1})",
+        "fu_delta": "delta_pour_mshv.adi cree ({0} QSO)",
+        "fu_delta_h": "=> dans MSHV : Log > Add ADIF To Log > delta_pour_mshv.adi",
+        "fu_err": "\nERREUR : {0}",
+        "err_t": "Erreur",
+        "fu_final1": "\nTermine. Rouvre MSHV et WSJT-X (dans WSJT-X : Settings >",
+        "fu_final2": "Colors > Rescan ADIF Log pour rafraichir les couleurs).",
+        "done_t": "Fusion terminee",
+        "done_m": "Les logs sont alignes.\nN'oublie pas le \"Rescan ADIF Log\" dans WSJT-X.",
+    },
+    "en": {
+        "title": "logsync  -  Merge WSJT-X / MSHV   (ON7VZ)",
+        "lang": "Langue / Language :",
+        "config": "Configuration",
+        "mshv_dir": "MSHV folder (mshvlog.edim / .adi) :",
+        "wsjtx_dir": "WSJT-X folder (wsjtx.log / _log.adi) :",
+        "browse": "Browse...",
+        "call": "Callsign :",
+        "grid": "Locator :",
+        "save_cfg": "Save config",
+        "analyse": "Analyse  (no changes)",
+        "merge": "MERGE",
+        "edim_direct": "Write directly into MSHV (.edim)",
+        "intro1": "Pick your two folders, then click \"Analyse\".",
+        "intro2": "Before \"Merge\": CLOSE MSHV and WSJT-X.",
+        "lang_set": "Language: English",
+        "cfg_saved": "Config saved to {0}",
+        "browse_mshv": "MSHV log folder",
+        "browse_wsjtx": "WSJT-X log folder",
+        "need_dirs_t": "Missing folders",
+        "need_dirs_m": "Pick both folders first (Browse buttons).",
+        "an_problem": "PROBLEM: some files were not found.",
+        "an_files": "Check both folders.",
+        "an_header": "=== ANALYSE (nothing was changed) ===",
+        "an_wsjtx": "WSJT-X  wsjtx.log    : {0} QSO",
+        "an_adi": "MSHV    mshvlog.adi  : {0} QSO",
+        "an_edim": "MSHV    mshvlog.edim : {0} QSO (active log)",
+        "an_master": "MASTER (union) : {0} QSO  [{1}]",
+        "an_iffusion": "If you merge :",
+        "an_to_edim": "  -> MSHV  mshvlog.edim  will receive : {0} QSO",
+        "an_to_wadi": "  -> WSJT-X wsjtx_log.adi will become : {0} QSO",
+        "an_to_csv": "  -> WSJT-X wsjtx.log    will receive : {0} QSO",
+        "cf_title": "Confirm merge",
+        "cf_head": "MSHV and WSJT-X must be CLOSED.\n\nThe program will:\n  - back up mshvlog.edim and wsjtx_log.adi (timestamped copy)\n  - rewrite wsjtx_log.adi with the full master\n  - {0}\n\nContinue ?",
+        "cf_edim": "add the missing QSOs into mshvlog.edim",
+        "cf_delta": "produce delta_pour_mshv.adi (manual import into MSHV)",
+        "fu_abort": "Aborted: files not found. Run Analyse first.",
+        "fu_header": "=== MERGE ===",
+        "fu_bak_wadi": "Backup wsjtx_log.adi : {0}",
+        "fu_wadi": "wsjtx_log.adi rewritten : {0} QSO",
+        "fu_bak_csv": "Backup wsjtx.log : {0}",
+        "fu_csv": "wsjtx.log : {0} QSO added",
+        "fu_bak_edim": "Backup mshvlog.edim : {0}",
+        "fu_edim": "mshvlog.edim : {0} QSO added (total ~{1})",
+        "fu_delta": "delta_pour_mshv.adi created ({0} QSO)",
+        "fu_delta_h": "=> in MSHV : Log > Add ADIF To Log > delta_pour_mshv.adi",
+        "fu_err": "\nERROR : {0}",
+        "err_t": "Error",
+        "fu_final1": "\nDone. Reopen MSHV and WSJT-X (in WSJT-X : Settings >",
+        "fu_final2": "Colors > Rescan ADIF Log to refresh the colours).",
+        "done_t": "Merge complete",
+        "done_m": "Logs are aligned.\nDon't forget \"Rescan ADIF Log\" in WSJT-X.",
+    },
+}
+
+
 class App:
     def __init__(self, root):
         self.root = root
-        root.title("logsync  -  Fusion WSJT-X / MSHV   (ON7VZ)")
-        root.geometry("760x560")
+        self.lang = "fr"
+        self.w = {}
 
         self.v_mshv = tk.StringVar()
         self.v_wsjtx = tk.StringVar()
         self.v_call = tk.StringVar(value="ON7VZ")
         self.v_grid = tk.StringVar(value="JO10WQ")
         self.v_edim_direct = tk.BooleanVar(value=True)
+        self.v_lang = tk.StringVar(value="fr")
+        self._intro_only = True
 
+        root.geometry("760x580")
         self._build_ui()
         self._load_config()
+        self.retranslate()
+
+    # ---- traduction
+    def t(self, key, *args):
+        s = TR.get(self.lang, TR["fr"]).get(key, key)
+        return s.format(*args) if args else s
+
+    def change_lang(self):
+        self.lang = self.v_lang.get()
+        self.retranslate()
+        # si seul l'intro est affiche (pas encore d'analyse), on le reimprime
+        # dans la nouvelle langue ; sinon on garde le contenu a l'ecran
+        if self._intro_only:
+            self._show_intro()
+        else:
+            self.log(self.t("lang_set"))
+        self._save_config(silent=True)
+
+    def _show_intro(self):
+        self.clear()
+        self.log(self.t("intro1"))
+        self.log(self.t("intro2") + "\n")
+        self._intro_only = True
+
+    def retranslate(self):
+        self.root.title(self.t("title"))
+        self.w["config"].config(text=self.t("config"))
+        self.w["mshv_lbl"].config(text=self.t("mshv_dir"))
+        self.w["wsjtx_lbl"].config(text=self.t("wsjtx_dir"))
+        self.w["browse1"].config(text=self.t("browse"))
+        self.w["browse2"].config(text=self.t("browse"))
+        self.w["call_lbl"].config(text=self.t("call"))
+        self.w["grid_lbl"].config(text=self.t("grid"))
+        self.w["save"].config(text=self.t("save_cfg"))
+        self.w["analyse"].config(text=self.t("analyse"))
+        self.w["merge"].config(text=self.t("merge"))
+        self.w["edim"].config(text=self.t("edim_direct"))
+        self.w["lang_lbl"].config(text=self.t("lang"))
 
     def _build_ui(self):
         pad = {"padx": 6, "pady": 4}
+
+        # barre langue
+        top = ttk.Frame(self.root)
+        top.pack(fill="x", padx=10, pady=(8, 0))
+        self.w["lang_lbl"] = ttk.Label(top, text="Langue / Language :")
+        self.w["lang_lbl"].pack(side="left")
+        ttk.Radiobutton(top, text="FR", value="fr", variable=self.v_lang,
+                        command=self.change_lang).pack(side="left", padx=(6, 0))
+        ttk.Radiobutton(top, text="EN", value="en", variable=self.v_lang,
+                        command=self.change_lang).pack(side="left")
+
         frm = ttk.LabelFrame(self.root, text="Configuration")
         frm.pack(fill="x", padx=10, pady=8)
+        self.w["config"] = frm
 
-        ttk.Label(frm, text="Dossier MSHV (mshvlog.edim / .adi) :").grid(row=0, column=0, sticky="w", **pad)
+        self.w["mshv_lbl"] = ttk.Label(frm, text="")
+        self.w["mshv_lbl"].grid(row=0, column=0, sticky="w", **pad)
         ttk.Entry(frm, textvariable=self.v_mshv, width=58).grid(row=0, column=1, **pad)
-        ttk.Button(frm, text="Parcourir...", command=self._browse_mshv).grid(row=0, column=2, **pad)
+        self.w["browse1"] = ttk.Button(frm, text="", command=self._browse_mshv)
+        self.w["browse1"].grid(row=0, column=2, **pad)
 
-        ttk.Label(frm, text="Dossier WSJT-X (wsjtx.log / _log.adi) :").grid(row=1, column=0, sticky="w", **pad)
+        self.w["wsjtx_lbl"] = ttk.Label(frm, text="")
+        self.w["wsjtx_lbl"].grid(row=1, column=0, sticky="w", **pad)
         ttk.Entry(frm, textvariable=self.v_wsjtx, width=58).grid(row=1, column=1, **pad)
-        ttk.Button(frm, text="Parcourir...", command=self._browse_wsjtx).grid(row=1, column=2, **pad)
+        self.w["browse2"] = ttk.Button(frm, text="", command=self._browse_wsjtx)
+        self.w["browse2"].grid(row=1, column=2, **pad)
 
         sub = ttk.Frame(frm)
         sub.grid(row=2, column=0, columnspan=3, sticky="w", **pad)
-        ttk.Label(sub, text="Indicatif :").pack(side="left")
+        self.w["call_lbl"] = ttk.Label(sub, text="")
+        self.w["call_lbl"].pack(side="left")
         ttk.Entry(sub, textvariable=self.v_call, width=10).pack(side="left", padx=(2, 14))
-        ttk.Label(sub, text="Locator :").pack(side="left")
+        self.w["grid_lbl"] = ttk.Label(sub, text="")
+        self.w["grid_lbl"].pack(side="left")
         ttk.Entry(sub, textvariable=self.v_grid, width=10).pack(side="left", padx=2)
-        ttk.Button(sub, text="Enregistrer config", command=self._save_config).pack(side="left", padx=20)
+        self.w["save"] = ttk.Button(sub, text="", command=self._save_config)
+        self.w["save"].pack(side="left", padx=20)
 
         act = ttk.Frame(self.root)
         act.pack(fill="x", padx=10)
-        ttk.Button(act, text="Analyser  (ne modifie rien)", command=self.do_analyse).pack(side="left", padx=4)
-        ttk.Button(act, text="FUSIONNER", command=self.do_fusionner).pack(side="left", padx=4)
-        ttk.Checkbutton(act, text="Ecrire directement dans MSHV (.edim)",
-                        variable=self.v_edim_direct).pack(side="left", padx=10)
+        self.w["analyse"] = ttk.Button(act, text="", command=self.do_analyse)
+        self.w["analyse"].pack(side="left", padx=4)
+        self.w["merge"] = ttk.Button(act, text="", command=self.do_fusionner)
+        self.w["merge"].pack(side="left", padx=4)
+        self.w["edim"] = ttk.Checkbutton(act, text="", variable=self.v_edim_direct)
+        self.w["edim"].pack(side="left", padx=10)
 
         self.txt = scrolledtext.ScrolledText(self.root, wrap="word", height=22)
         self.txt.pack(fill="both", expand=True, padx=10, pady=8)
-        self.log("Choisis tes deux dossiers, puis clique sur \"Analyser\".")
-        self.log("Avant \"Fusionner\" : FERME MSHV et WSJT-X.\n")
+        self._show_intro()
 
     # ---- utilitaires UI
     def log(self, msg=""):
@@ -450,12 +622,12 @@ class App:
         self.txt.delete("1.0", "end")
 
     def _browse_mshv(self):
-        d = filedialog.askdirectory(title="Dossier des logs MSHV")
+        d = filedialog.askdirectory(title=self.t("browse_mshv"))
         if d:
             self.v_mshv.set(os.path.normpath(d))
 
     def _browse_wsjtx(self):
-        d = filedialog.askdirectory(title="Dossier des logs WSJT-X")
+        d = filedialog.askdirectory(title=self.t("browse_wsjtx"))
         if d:
             self.v_wsjtx.set(os.path.normpath(d))
 
@@ -469,16 +641,22 @@ class App:
         self.v_wsjtx.set(cfg.get("paths", "wsjtx_log_dir", fallback=""))
         self.v_call.set(cfg.get("station", "call", fallback="ON7VZ"))
         self.v_grid.set(cfg.get("station", "grid", fallback="JO10WQ"))
+        lang = cfg.get("station", "lang", fallback="fr")
+        if lang in ("fr", "en"):
+            self.lang = lang
+            self.v_lang.set(lang)
 
-    def _save_config(self):
+    def _save_config(self, silent=False):
         cfg = configparser.ConfigParser()
         cfg["paths"] = {"mshv_log_dir": self.v_mshv.get().strip(),
                         "wsjtx_log_dir": self.v_wsjtx.get().strip()}
         cfg["station"] = {"call": self.v_call.get().strip(),
-                          "grid": self.v_grid.get().strip()}
+                          "grid": self.v_grid.get().strip(),
+                          "lang": self.lang}
         with open(CONFIG_PATH, "w", encoding="utf-8") as fh:
             cfg.write(fh)
-        self.log("Config enregistree dans %s\n" % CONFIG_PATH)
+        if not silent:
+            self.log(self.t("cfg_saved", CONFIG_PATH) + "\n")
 
     # ---- coeur
     def _paths(self):
@@ -496,8 +674,7 @@ class App:
 
     def _check_paths(self):
         if not self.v_mshv.get().strip() or not self.v_wsjtx.get().strip():
-            messagebox.showwarning("Dossiers manquants",
-                                   "Choisis d'abord les deux dossiers (boutons Parcourir).")
+            messagebox.showwarning(self.t("need_dirs_t"), self.t("need_dirs_m"))
             return False
         return True
 
@@ -505,14 +682,15 @@ class App:
         if not self._check_paths():
             return
         self.clear()
+        self._intro_only = False
         ad, ed, wx, st = self._read_all()
         s_ad, s_ed, s_wx = st
         if "ABSENT" in st:
-            self.log("PROBLEME : certains fichiers sont introuvables.")
+            self.log(self.t("an_problem"))
             self.log("  mshvlog.adi  : %s" % s_ad)
             self.log("  mshvlog.edim : %s" % s_ed)
             self.log("  wsjtx.log    : %s" % s_wx)
-            self.log("Verifie les deux dossiers.")
+            self.log(self.t("an_files"))
             return
         edim_keys = set(qso_key(q) for q in ed)
         wsjtx_keys = set(qso_key(q) for q in wx)
@@ -521,39 +699,32 @@ class App:
         add_wsjtx = [master[k] for k in set(master) - wsjtx_keys]
         from collections import Counter
         mc = Counter(k[4] for k in master)
-        self.log("=== ANALYSE (rien n'a ete modifie) ===\n")
-        self.log("WSJT-X  wsjtx.log    : %d QSO" % len(wsjtx_keys))
-        self.log("MSHV    mshvlog.adi  : %d QSO" % len(ad))
-        self.log("MSHV    mshvlog.edim : %d QSO (log actif)" % len(edim_keys))
+        modes = ", ".join("%s=%d" % (m, n) for m, n in sorted(mc.items(), key=lambda x: -x[1]))
+        self.log(self.t("an_header") + "\n")
+        self.log(self.t("an_wsjtx", len(wsjtx_keys)))
+        self.log(self.t("an_adi", len(ad)))
+        self.log(self.t("an_edim", len(edim_keys)))
         self.log("")
-        self.log("MASTER (union) : %d QSO  [%s]" %
-                 (len(master), ", ".join("%s=%d" % (m, n) for m, n in sorted(mc.items(), key=lambda x: -x[1]))))
+        self.log(self.t("an_master", len(master), modes))
         self.log("")
-        self.log("Si tu fusionnes :")
-        self.log("  -> MSHV  mshvlog.edim  recevra : %d QSO" % len(delta_mshv))
-        self.log("  -> WSJT-X wsjtx_log.adi passera a : %d QSO" % len(master))
-        self.log("  -> WSJT-X wsjtx.log    recevra : %d QSO" % len(add_wsjtx))
+        self.log(self.t("an_iffusion"))
+        self.log(self.t("an_to_edim", len(delta_mshv)))
+        self.log(self.t("an_to_wadi", len(master)))
+        self.log(self.t("an_to_csv", len(add_wsjtx)))
 
     def do_fusionner(self):
         if not self._check_paths():
             return
-        if not messagebox.askyesno(
-                "Confirmer la fusion",
-                "MSHV et WSJT-X doivent etre FERMES.\n\n"
-                "Le programme va :\n"
-                "  - sauvegarder mshvlog.edim et wsjtx_log.adi (copie horodatee)\n"
-                "  - reecrire wsjtx_log.adi avec le master complet\n"
-                "  - %s\n\nContinuer ?" %
-                ("ajouter les QSO manquants dans mshvlog.edim"
-                 if self.v_edim_direct.get() else
-                 "produire delta_pour_mshv.adi (import manuel dans MSHV)")):
+        what = self.t("cf_edim") if self.v_edim_direct.get() else self.t("cf_delta")
+        if not messagebox.askyesno(self.t("cf_title"), self.t("cf_head", what)):
             return
 
         self.clear()
+        self._intro_only = False
         p_adi, p_edim, p_csv, p_wadi = self._paths()
         ad, ed, wx, st = self._read_all()
         if "ABSENT" in st:
-            self.log("Abandon : fichiers introuvables. Lance d'abord Analyser.")
+            self.log(self.t("fu_abort"))
             return
         call = self.v_call.get().strip()
         grid = self.v_grid.get().strip()
@@ -563,45 +734,41 @@ class App:
         delta_mshv = [master[k] for k in set(master) - edim_keys]
         delta_csv = [master[k] for k in set(master) - csv_keys]
 
-        self.log("=== FUSION ===\n")
+        self.log(self.t("fu_header") + "\n")
         try:
-            # 1) WSJT-X .adi : sauvegarde + reecriture complete
             bak_w = timestamped_backup(p_wadi)
             if bak_w:
-                self.log("Sauvegarde wsjtx_log.adi : %s" % os.path.basename(bak_w))
+                self.log(self.t("fu_bak_wadi", os.path.basename(bak_w)))
             write_adif(p_wadi, list(master.values()), call, grid,
                        "logsync master export (pour WSJT-X)")
-            self.log("wsjtx_log.adi reecrit : %d QSO" % len(master))
+            self.log(self.t("fu_wadi", len(master)))
 
-            # 1b) WSJT-X .log (CSV) : sauvegarde + ajout des QSO manquants
             bak_c = timestamped_backup(p_csv)
             if bak_c:
-                self.log("Sauvegarde wsjtx.log : %s" % os.path.basename(bak_c))
+                self.log(self.t("fu_bak_csv", os.path.basename(bak_c)))
             n_csv = append_csv(p_csv, delta_csv)
-            self.log("wsjtx.log : %d QSO ajoutes" % n_csv)
+            self.log(self.t("fu_csv", n_csv))
             self.log("")
 
-            # 2) MSHV
             if self.v_edim_direct.get():
                 bak_e = timestamped_backup(p_edim)
                 if bak_e:
-                    self.log("Sauvegarde mshvlog.edim : %s" % os.path.basename(bak_e))
+                    self.log(self.t("fu_bak_edim", os.path.basename(bak_e)))
                 n = append_edim(p_edim, delta_mshv)
-                self.log("mshvlog.edim : %d QSO ajoutes (total ~%d)" % (n, len(master)))
+                self.log(self.t("fu_edim", n, len(master)))
             else:
                 out = os.path.join(self.v_mshv.get().strip(), "delta_pour_mshv.adi")
                 write_adif(out, delta_mshv, call, grid, "logsync delta (a importer)")
-                self.log("delta_pour_mshv.adi cree (%d QSO)" % len(delta_mshv))
-                self.log("=> dans MSHV : Log > Add ADIF To Log > delta_pour_mshv.adi")
+                self.log(self.t("fu_delta", len(delta_mshv)))
+                self.log(self.t("fu_delta_h"))
         except Exception as e:
-            self.log("\nERREUR : %s" % e)
-            messagebox.showerror("Erreur", str(e))
+            self.log(self.t("fu_err", e))
+            messagebox.showerror(self.t("err_t"), str(e))
             return
 
-        self.log("\nTermine. Rouvre MSHV et WSJT-X (dans WSJT-X : Settings >")
-        self.log("Colors > Rescan ADIF Log pour rafraichir les couleurs).")
-        messagebox.showinfo("Fusion terminee",
-                            "Les logs sont alignes.\nN'oublie pas le \"Rescan ADIF Log\" dans WSJT-X.")
+        self.log(self.t("fu_final1"))
+        self.log(self.t("fu_final2"))
+        messagebox.showinfo(self.t("done_t"), self.t("done_m"))
 
 
 def main():
