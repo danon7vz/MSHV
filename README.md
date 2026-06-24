@@ -1,7 +1,7 @@
 # MSHV
 Logsync — Synchronisation des logs WSJT-X et MSHV
 
-Outil pour maintenir les journaux WSJT-X et MSHV mutuellement à jour, afin que l'affichage « déjà contacté » (worked-before) soit cohérent quel que soit le programme utilisé.
+Outil FR/EN pour maintenir les journaux WSJT-X et MSHV mutuellement à jour, afin que l'affichage « déjà contacté » (worked-before) soit cohérent quel que soit le programme utilisé.
 
 Pourquoi
 
@@ -40,7 +40,8 @@ Auteur
 Daniel — ON7VZ
 
 Logsync — Synchronizing WSJT-X and MSHV Logs
-A tool to keep WSJT-X and MSHV logs mutually up-to-date, ensuring consistent "worked-before" information regardless of the program used.
+
+A tool FR/EN to keep WSJT-X and MSHV logs mutually up-to-date, ensuring consistent "worked-before" information regardless of the program used.
 
 Why? 
 
