@@ -1,0 +1,21 @@
+# Configuration personnelle (chemins locaux) — ne pas publier
+config.ini
+
+# Sorties et sauvegardes de l'outil
+logsync_out/
+*.backup-*
+
+# Journaux QSO personnels — ne jamais committer
+*.adi
+*.edim
+*.log
+!*/run_*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.spec
