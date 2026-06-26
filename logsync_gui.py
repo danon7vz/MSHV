@@ -40,7 +40,12 @@ try:
 except Exception:
     TK_OK = False
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Dossier du programme : a cote du .exe si fige par PyInstaller,
+# a cote du .py sinon (pour que config.ini soit au bon endroit dans les deux cas)
+if getattr(sys, "frozen", False):
+    SCRIPT_DIR = os.path.dirname(sys.executable)
+else:
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(SCRIPT_DIR, "config.ini")
 
 # --- frequence -> bande (longueur d'onde ADIF) ---
@@ -419,7 +424,7 @@ TR = {
         "an_files": "Verifie les deux dossiers.",
         "an_header": "=== ANALYSE (rien n'a ete modifie) ===",
         "an_wsjtx": "WSJT-X  wsjtx.log    : {0} QSO",
-        "an_adi": "MSHV    mshvlog.adi  : {0} QSO",
+        "an_adi": "MSHV    mshvlog.adi  : {0} QSO (miroir, IGNORE)",
         "an_edim": "MSHV    mshvlog.edim : {0} QSO (log actif)",
         "an_master": "MASTER (union) : {0} QSO  [{1}]",
         "an_iffusion": "Si tu fusionnes :",
@@ -472,7 +477,7 @@ TR = {
         "an_files": "Check both folders.",
         "an_header": "=== ANALYSE (nothing was changed) ===",
         "an_wsjtx": "WSJT-X  wsjtx.log    : {0} QSO",
-        "an_adi": "MSHV    mshvlog.adi  : {0} QSO",
+        "an_adi": "MSHV    mshvlog.adi  : {0} QSO (mirror, IGNORED)",
         "an_edim": "MSHV    mshvlog.edim : {0} QSO (active log)",
         "an_master": "MASTER (union) : {0} QSO  [{1}]",
         "an_iffusion": "If you merge :",
@@ -685,16 +690,15 @@ class App:
         self._intro_only = False
         ad, ed, wx, st = self._read_all()
         s_ad, s_ed, s_wx = st
-        if "ABSENT" in st:
+        if "ABSENT" in (s_ed, s_wx):
             self.log(self.t("an_problem"))
-            self.log("  mshvlog.adi  : %s" % s_ad)
             self.log("  mshvlog.edim : %s" % s_ed)
             self.log("  wsjtx.log    : %s" % s_wx)
             self.log(self.t("an_files"))
             return
         edim_keys = set(qso_key(q) for q in ed)
         wsjtx_keys = set(qso_key(q) for q in wx)
-        master = build_master(ad, ed, wx)
+        master = build_master(ed, wx)
         delta_mshv = [master[k] for k in set(master) - edim_keys]
         add_wsjtx = [master[k] for k in set(master) - wsjtx_keys]
         from collections import Counter
@@ -723,14 +727,14 @@ class App:
         self._intro_only = False
         p_adi, p_edim, p_csv, p_wadi = self._paths()
         ad, ed, wx, st = self._read_all()
-        if "ABSENT" in st:
+        if "ABSENT" in st[1:]:
             self.log(self.t("fu_abort"))
             return
         call = self.v_call.get().strip()
         grid = self.v_grid.get().strip()
         edim_keys = set(qso_key(q) for q in ed)
         csv_keys = set(qso_key(q) for q in wx)
-        master = build_master(ad, ed, wx)
+        master = build_master(ed, wx)
         delta_mshv = [master[k] for k in set(master) - edim_keys]
         delta_csv = [master[k] for k in set(master) - csv_keys]
 
