@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-logsync_gui.py  -  Fusion des logs WSJT-X <-> MSHV   (ON7VZ)
+logsync_gui.py  -  Fusion des logs WSJT-X <-> MSHV   v1.2  (ON7VZ)
 ============================================================
 
 Interface graphique (Tkinter, aucune installation supplementaire).
@@ -39,6 +39,8 @@ try:
     TK_OK = True
 except Exception:
     TK_OK = False
+
+VERSION = "1.2"
 
 # Dossier du programme : a cote du .exe si fige par PyInstaller,
 # a cote du .py sinon (pour que config.ini soit au bon endroit dans les deux cas)
@@ -400,8 +402,8 @@ def append_csv(path, qsos):
 # --- Traductions FR / EN ---
 TR = {
     "fr": {
-        "title": "logsync  -  Fusion WSJT-X / MSHV   (ON7VZ)",
-        "lang": "Langue / Language :",
+        "title": "logsync  -  Fusion WSJT-X / MSHV   v{0}  (ON7VZ)",
+        "lang": "Taal / Langue / Language :",
         "config": "Configuration",
         "mshv_dir": "Dossier MSHV (mshvlog.edim / .adi) :",
         "wsjtx_dir": "Dossier WSJT-X (wsjtx.log / _log.adi) :",
@@ -453,8 +455,8 @@ TR = {
         "done_m": "Les logs sont alignes.\nN'oublie pas le \"Rescan ADIF Log\" dans WSJT-X.",
     },
     "en": {
-        "title": "logsync  -  Merge WSJT-X / MSHV   (ON7VZ)",
-        "lang": "Langue / Language :",
+        "title": "logsync  -  Merge WSJT-X / MSHV   v{0}  (ON7VZ)",
+        "lang": "Taal / Langue / Language :",
         "config": "Configuration",
         "mshv_dir": "MSHV folder (mshvlog.edim / .adi) :",
         "wsjtx_dir": "WSJT-X folder (wsjtx.log / _log.adi) :",
@@ -505,6 +507,59 @@ TR = {
         "done_t": "Merge complete",
         "done_m": "Logs are aligned.\nDon't forget \"Rescan ADIF Log\" in WSJT-X.",
     },
+    "nl": {
+        "title": "logsync  -  Samenvoegen WSJT-X / MSHV   v{0}  (ON7VZ)",
+        "lang": "Taal / Langue / Language :",
+        "config": "Configuratie",
+        "mshv_dir": "MSHV-map (mshvlog.edim / .adi) :",
+        "wsjtx_dir": "WSJT-X-map (wsjtx.log / _log.adi) :",
+        "browse": "Bladeren...",
+        "call": "Callsign :",
+        "grid": "Locator :",
+        "save_cfg": "Config opslaan",
+        "analyse": "Analyseren  (wijzigt niets)",
+        "merge": "SAMENVOEGEN",
+        "edim_direct": "Rechtstreeks in MSHV (.edim) schrijven",
+        "intro1": "Kies je twee mappen en klik op \"Analyseren\".",
+        "intro2": "Vóór \"Samenvoegen\": SLUIT MSHV en WSJT-X.",
+        "lang_set": "Taal: Nederlands",
+        "cfg_saved": "Config opgeslagen in {0}",
+        "browse_mshv": "Map met MSHV-logs",
+        "browse_wsjtx": "Map met WSJT-X-logs",
+        "need_dirs_t": "Ontbrekende mappen",
+        "need_dirs_m": "Kies eerst beide mappen (knoppen Bladeren).",
+        "an_problem": "PROBLEEM: sommige bestanden zijn niet gevonden.",
+        "an_files": "Controleer beide mappen.",
+        "an_header": "=== ANALYSE (er is niets gewijzigd) ===",
+        "an_wsjtx": "WSJT-X  wsjtx.log    : {0} QSO",
+        "an_adi": "MSHV    mshvlog.adi  : {0} QSO (spiegel, GENEGEERD)",
+        "an_edim": "MSHV    mshvlog.edim : {0} QSO (actief logboek)",
+        "an_master": "MASTER (samenvoeging) : {0} QSO  [{1}]",
+        "an_iffusion": "Als je samenvoegt :",
+        "an_to_edim": "  -> MSHV  mshvlog.edim  ontvangt : {0} QSO",
+        "an_to_wadi": "  -> WSJT-X wsjtx_log.adi wordt : {0} QSO",
+        "an_to_csv": "  -> WSJT-X wsjtx.log    ontvangt : {0} QSO",
+        "cf_title": "Samenvoegen bevestigen",
+        "cf_head": "MSHV en WSJT-X moeten GESLOTEN zijn.\n\nHet programma zal:\n  - mshvlog.edim en wsjtx_log.adi back-uppen (kopie met tijdstempel)\n  - wsjtx_log.adi herschrijven met de volledige master\n  - {0}\n\nDoorgaan ?",
+        "cf_edim": "de ontbrekende QSO's toevoegen aan mshvlog.edim",
+        "cf_delta": "delta_pour_mshv.adi maken (handmatig importeren in MSHV)",
+        "fu_abort": "Afgebroken: bestanden niet gevonden. Voer eerst Analyseren uit.",
+        "fu_header": "=== SAMENVOEGEN ===",
+        "fu_bak_wadi": "Back-up wsjtx_log.adi : {0}",
+        "fu_wadi": "wsjtx_log.adi herschreven : {0} QSO",
+        "fu_bak_csv": "Back-up wsjtx.log : {0}",
+        "fu_csv": "wsjtx.log : {0} QSO toegevoegd",
+        "fu_bak_edim": "Back-up mshvlog.edim : {0}",
+        "fu_edim": "mshvlog.edim : {0} QSO toegevoegd (totaal ~{1})",
+        "fu_delta": "delta_pour_mshv.adi gemaakt ({0} QSO)",
+        "fu_delta_h": "=> in MSHV : Log > Add ADIF To Log > delta_pour_mshv.adi",
+        "fu_err": "\nFOUT : {0}",
+        "err_t": "Fout",
+        "fu_final1": "\nKlaar. Heropen MSHV en WSJT-X (in WSJT-X : Settings >",
+        "fu_final2": "Colors > Rescan ADIF Log om de kleuren te verversen).",
+        "done_t": "Samenvoegen voltooid",
+        "done_m": "De logboeken zijn gelijkgezet.\nVergeet \"Rescan ADIF Log\" in WSJT-X niet.",
+    },
 }
 
 
@@ -550,7 +605,7 @@ class App:
         self._intro_only = True
 
     def retranslate(self):
-        self.root.title(self.t("title"))
+        self.root.title(self.t("title", VERSION))
         self.w["config"].config(text=self.t("config"))
         self.w["mshv_lbl"].config(text=self.t("mshv_dir"))
         self.w["wsjtx_lbl"].config(text=self.t("wsjtx_dir"))
@@ -575,6 +630,8 @@ class App:
         ttk.Radiobutton(top, text="FR", value="fr", variable=self.v_lang,
                         command=self.change_lang).pack(side="left", padx=(6, 0))
         ttk.Radiobutton(top, text="EN", value="en", variable=self.v_lang,
+                        command=self.change_lang).pack(side="left")
+        ttk.Radiobutton(top, text="NL", value="nl", variable=self.v_lang,
                         command=self.change_lang).pack(side="left")
 
         frm = ttk.LabelFrame(self.root, text="Configuration")
@@ -647,7 +704,7 @@ class App:
         self.v_call.set(cfg.get("station", "call", fallback="ON7VZ"))
         self.v_grid.set(cfg.get("station", "grid", fallback="JO10WQ"))
         lang = cfg.get("station", "lang", fallback="fr")
-        if lang in ("fr", "en"):
+        if lang in ("fr", "en", "nl"):
             self.lang = lang
             self.v_lang.set(lang)
 
